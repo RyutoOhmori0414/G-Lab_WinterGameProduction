@@ -20,6 +20,7 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
+        Cursor.visible = false;
         _timer += Time.deltaTime;
 
         if (_timer > _setUpTime)
