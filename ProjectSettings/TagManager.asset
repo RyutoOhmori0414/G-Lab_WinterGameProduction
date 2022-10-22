@@ -7,6 +7,7 @@ TagManager:
   - Bullet
   - SpeedUp
   - HPUp
+  - Flag
   layers:
   - Default
   - TransparentFX
