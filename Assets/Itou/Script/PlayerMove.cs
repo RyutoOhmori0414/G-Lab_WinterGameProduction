@@ -18,12 +18,6 @@ public class PlayerMove : MonoBehaviour
     Rigidbody _rb = default;
     [Header("タグ関連")]
     [SerializeField] string _speedUpTag = "SpeedUp";
-    [Tooltip("発射する雪玉"), SerializeField]
-    GameObject _snowBall;
-    [Tooltip("銃口"), SerializeField]
-    Transform _muzzle;
-    [Tooltip("ボールのスピード"), SerializeField]
-    float _ballSpeed = 10f;
     public float MoveSpeedDefault { get => _moveSpeedDefault; set => _moveSpeedDefault = value; }
     public float MoveSpeedPowerUp { get => _moveSpeedPowerUp; set => _moveSpeedPowerUp = value; }
     public float MoveSpeed { get => _moveSpeed; set => _moveSpeed = value; }
@@ -45,17 +39,6 @@ public class PlayerMove : MonoBehaviour
         // 移動の入力がない時は回転させない。入力がある時はその方向にキャラクターを向ける。
         if (dir != Vector3.zero) this.transform.forward = dir;
         _rb.velocity = dir.normalized * _moveSpeed;
-        
-        if (Input.GetButtonDown("Fire1"))
-        {
-            GameObject obj = Instantiate(_snowBall);
-            obj.transform.position = _muzzle.position;
-            obj.transform.forward = camera.transform.forward;
-
-           Rigidbody _objRb = obj.GetComponent<Rigidbody>();
-            _objRb.velocity = obj.transform.forward * _ballSpeed;
-            Destroy(obj, 3f);
-        }
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -64,6 +47,6 @@ public class PlayerMove : MonoBehaviour
         {
             _moveSpeed = _moveSpeedPowerUp;
         }
-
     }
+    
 }
