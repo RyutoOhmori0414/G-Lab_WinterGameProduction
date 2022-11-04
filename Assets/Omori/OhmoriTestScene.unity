@@ -358,6 +358,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _timeLimit: 0
   _setUpTime: 0
+  _flagTransform: {fileID: 0}
+  _teamATransform: {fileID: 0}
+  _teamBTransform: {fileID: 0}
 --- !u!4 &305060832
 Transform:
   m_ObjectHideFlags: 0
@@ -18078,7 +18081,7 @@ Mesh:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: pb_Mesh27946
+  m_Name: pb_Mesh28394
   serializedVersion: 10
   m_SubMeshes:
   - serializedVersion: 2
