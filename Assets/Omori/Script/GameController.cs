@@ -52,7 +52,7 @@ public class GameController : MonoBehaviour
                 // カウントダウンが終わったらポーズを解除する
                 foreach(var n in _pausables)
                 {
-                    n.Awake();
+                    n.Resume();
                 }
             }
             if (_timer > _timeLimit + _setUpTime)
