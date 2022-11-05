@@ -38,7 +38,7 @@ public class PlayerMove : MonoBehaviour
         dir.y = 0;
         // 移動の入力がない時は回転させない。入力がある時はその方向にキャラクターを向ける。
         if (dir != Vector3.zero) this.transform.forward = dir;
-        _rb.velocity = dir.normalized * _moveSpeed;
+        _rb.velocity = dir.normalized * _moveSpeed + Vector3.up * _rb.velocity.y;
     }
     private void OnTriggerEnter(Collider other)
     {

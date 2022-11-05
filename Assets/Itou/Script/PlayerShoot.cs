@@ -25,7 +25,7 @@ public class PlayerShoot : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetButtonDown(_shot))
+        if (Input.GetButtonDown("Fire1"))
         {
             if (RemainingBullets > 1)
             {
