@@ -14,5 +14,5 @@ public interface IPausable
     /// <summary>
     /// Pause‚ğ‰ğœ‚·‚éˆ—
     /// </summary>
-    public void Awake();
+    public void Resume();
 }
