@@ -26,6 +26,8 @@ public class PlayerRespawn : MonoBehaviour, IPausable
     {
         _playerHP = GetComponent<PlayerHP>();
         _playerMove = GetComponent<PlayerMove>();
+        _playerShoot = GetComponent<PlayerShoot>();
+        _playerReload = GetComponent<PlayerReload>();
         //Å‰‚ÌˆÊ’u‚ÆŠp“x‚ğŠo‚¦‚é
         _respawnQuaternion = gameObject.transform.rotation;
         _respawnPosition = gameObject.transform.position;
