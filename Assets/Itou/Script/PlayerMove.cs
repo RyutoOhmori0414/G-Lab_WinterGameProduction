@@ -48,5 +48,4 @@ public class PlayerMove : MonoBehaviour
             _moveSpeed = _moveSpeedPowerUp;
         }
     }
-    
 }

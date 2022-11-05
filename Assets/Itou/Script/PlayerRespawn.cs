@@ -4,7 +4,9 @@ using UnityEngine;
 using UnityEngine.UI;
 [RequireComponent(typeof(PlayerMove))]
 [RequireComponent(typeof(PlayerHP))]
-public class PlayerRespawn : MonoBehaviour
+[RequireComponent(typeof(PlayerShoot))]
+[RequireComponent(typeof(PlayerReload))]
+public class PlayerRespawn : MonoBehaviour, IPausable
 {
     [Header("復活関連")]
     [SerializeField] Vector3 _respawnPosition;
@@ -15,6 +17,8 @@ public class PlayerRespawn : MonoBehaviour
     [Header("他のスクリプト")]
     [SerializeField] PlayerHP _playerHP;
     [SerializeField] PlayerMove _playerMove;
+    [SerializeField] PlayerShoot _playerShoot;
+    [SerializeField] PlayerReload _playerReload;
 
     bool _flag = false;
     bool alive = true;
@@ -39,6 +43,8 @@ public class PlayerRespawn : MonoBehaviour
     {
         //プレイヤーの操作を止める
         _playerMove.enabled = false;
+        _playerShoot.enabled = false;
+        _playerReload.enabled = false;
         //リスポン時間を待ってからいろいろ処理させる。
         yield return new WaitForSeconds(_deathTimer);
         //フラグ取得時だけリスポン地点でリスポン
@@ -60,5 +66,23 @@ public class PlayerRespawn : MonoBehaviour
         _playerHP.HpImage[_playerHP.HpMax].gameObject.GetComponent<Image>().color = Color.clear;
         //プレイヤーの操作を再起させる
         _playerMove.enabled = true;
+        _playerShoot.enabled = true;
+        _playerReload.enabled = true;
+    }
+
+    public void Pause()
+    {
+        //プレイヤーの操作を止める
+        _playerMove.enabled = false;
+        _playerShoot.enabled = false;
+        _playerReload.enabled = false;
+    }
+
+    public void Resume()
+    {
+        //プレイヤーの操作を再起させる
+        _playerMove.enabled = true;
+        _playerShoot.enabled = true;
+        _playerReload.enabled = true;
     }
 }
