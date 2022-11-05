@@ -13,9 +13,6 @@ public class PlayerShoot : MonoBehaviour
     [SerializeField] float _shootRange = 20f;
     /// <summary>レーザーが当たった時に加える力</summary>
     [SerializeField] float _shootPower = 10f;
-
-    [SerializeField] Image _crosshair;
-
     [SerializeField] Camera _camera;
     [SerializeField] Text _remainingBulletsText;
     [Header("発射ボタンのインプットマネージャーの名前")]
