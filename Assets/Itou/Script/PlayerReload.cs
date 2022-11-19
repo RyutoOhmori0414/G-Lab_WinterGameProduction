@@ -9,11 +9,11 @@ public class PlayerReload : MonoBehaviour
     [Header("ÉäÉçÅ[Éhéûä‘")]
     [SerializeField] float _reloadTime = 3f;
     [Header("ñﬂÇµÇƒÇŸÇµÇ¢íeêî")]
-    public int ReloadCount = 10;
+    public int ReloadCount = 5;
     PlayerShoot _playerShoot;
     [Header("UI")]
-    [SerializeField] Text _remainingBulletsText;
     [SerializeField] Text _reloadText;
+    [SerializeField] Image _crosshair;
 
     private void Start()
     {
@@ -25,17 +25,25 @@ public class PlayerReload : MonoBehaviour
         //if (Input.GetButtonDown(Reload))
         if (Input.GetKeyDown(KeyCode.R))
         {
-            StartCoroutine(ReloadAction());
+            if (_playerShoot.RemainingBullets != ReloadCount)
+            {
+                StartCoroutine(ReloadAction());
+            }
         }
     }
     public IEnumerator ReloadAction()
     {
         _playerShoot.enabled = false;
         _reloadText.enabled = true;
+        _crosshair.enabled = false;
         yield return new WaitForSeconds(_reloadTime);
         _playerShoot.RemainingBullets = ReloadCount;
-        _remainingBulletsText.text = $"{_playerShoot.RemainingBullets} / {ReloadCount}";
         _reloadText.enabled = false;
         _playerShoot.enabled = true;
+        _crosshair.enabled = true;
+        for (int i = 0; i < ReloadCount; i++)
+        {
+            _playerShoot.BulletImage[i].color = Color.white;
+        }
     }
 }

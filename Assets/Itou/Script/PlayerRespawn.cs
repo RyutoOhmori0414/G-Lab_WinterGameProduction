@@ -19,6 +19,7 @@ public class PlayerRespawn : MonoBehaviour, IPausable
     [SerializeField] PlayerMove _playerMove;
     [SerializeField] PlayerShoot _playerShoot;
     [SerializeField] PlayerReload _playerReload;
+    [SerializeField] PlayerGetFlag _playerGetFlag;
 
     bool _flag = false;
     bool alive = true;
@@ -28,6 +29,7 @@ public class PlayerRespawn : MonoBehaviour, IPausable
         _playerMove = GetComponent<PlayerMove>();
         _playerShoot = GetComponent<PlayerShoot>();
         _playerReload = GetComponent<PlayerReload>();
+        _playerGetFlag = GetComponent<PlayerGetFlag>();
         //最初の位置と角度を覚える
         _respawnQuaternion = gameObject.transform.rotation;
         _respawnPosition = gameObject.transform.position;
@@ -47,6 +49,13 @@ public class PlayerRespawn : MonoBehaviour, IPausable
         _playerMove.enabled = false;
         _playerShoot.enabled = false;
         _playerReload.enabled = false;
+        if (_playerGetFlag.GetFlag == true)
+        {
+            _playerGetFlag.GetFlag = false;
+            _playerGetFlag.HitCollider.gameObject.SetActive(false);
+
+        }
+        /////**********************************************************flag 落とす のまだかいてない
         //リスポン時間を待ってからいろいろ処理させる。
         yield return new WaitForSeconds(_deathTimer);
         //フラグ取得時だけリスポン地点でリスポン

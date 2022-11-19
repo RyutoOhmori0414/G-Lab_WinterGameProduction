@@ -11,10 +11,10 @@ public class PlayerMove : MonoBehaviour
     [SerializeField] string _horizontal = "Horizontal";
     [SerializeField] string _vertical = "Vertical";
     [Header("移動速度")]
-    [SerializeField] private float _moveSpeed = 3;
+    [SerializeField] private float _moveSpeed = 5;
     [Header("速度関連")]
-    [SerializeField] private float _moveSpeedDefault = 3;
-    [SerializeField] private float _moveSpeedPowerUp = 5;
+    [SerializeField] private float _moveSpeedDefault = 5;
+    [SerializeField] private float _moveSpeedPowerUp = 8;
     Rigidbody _rb = default;
     [Header("タグ関連")]
     [SerializeField] string _speedUpTag = "SpeedUp";
