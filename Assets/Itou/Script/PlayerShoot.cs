@@ -5,7 +5,8 @@ using System.Collections.Generic;
 public class PlayerShoot : MonoBehaviour
 {
     /// <summary> 残弾 </summary>
-    public int RemainingBullets = 5;
+    public int RemainingBullets { get => _remainingBullets; set => _remainingBullets = value; }
+    [SerializeField] int _remainingBullets = 5;
     /// <summary>「弾」のプレハブ</summary>
     [SerializeField] GameObject _bulletPrefab = default;
     /// <summary>弾/レーザーを発射する地点を設定する</summary>
@@ -42,7 +43,7 @@ public class PlayerShoot : MonoBehaviour
     }
     void Shot()
     {
-        RemainingBullets--;
+        _remainingBullets--;
         _bulletImage[RemainingBullets].gameObject.GetComponent<Image>().color = Color.gray;//弾のUIが一個減る
         var go = Instantiate(_bulletPrefab);
         go.transform.position = _camera.transform.position;

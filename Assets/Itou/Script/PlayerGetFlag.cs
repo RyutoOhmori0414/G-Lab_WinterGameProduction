@@ -22,8 +22,10 @@ public class PlayerGetFlag : MonoBehaviour
 
     [Header("")]
     public Collider HitCollider = default;    // Ray が当たったコライダー
+    [SerializeField] private Collider _hitCollider = default;
     bool _isFlag;
-    public bool GetFlag;
+    public bool GetFlag { get => _getFlag; set => _getFlag = value; }
+    private bool _getFlag;
     [Header("")]
     PlayerMove _move;
     PlayerShoot _shoot;
@@ -50,15 +52,15 @@ public class PlayerGetFlag : MonoBehaviour
         // Ray が当たったオブジェクトをhitColliderに与える
         if (Physics.Raycast(ray, out hit, _shootRange, _layerMask))
         {
-            HitCollider = hit.collider;
+            _hitCollider = hit.collider;
         }
     }
     void GetFlagClick()
     {
-        if (GetFlag) { return; }
-        if (Input.GetButtonDown(_getFlagButtonName) && HitCollider.CompareTag("Flag"))
+        if (_getFlag) { return; }
+        if (Input.GetButtonDown(_getFlagButtonName) && _hitCollider.CompareTag("Flag"))
         {
-            HitCollider.gameObject.SetActive(false);
+            _hitCollider.gameObject.SetActive(false);
             _shoot.enabled = false;
             _reload.enabled = false;
             _move.MoveSpeed = _carrySpeed;
@@ -66,22 +68,22 @@ public class PlayerGetFlag : MonoBehaviour
             Debug.Log("フラグ取得したよ");
 
             _candyIcon.enabled = true;
-            GetFlag = true;
+            _getFlag = true;
             _flagText.enabled = false;
         }
 
     }
     void GetFlagEnum()
     {
-        if (!GetFlag) { return; }
+        if (!_getFlag) { return; }
         _move.MoveSpeed = _carrySpeed;
         //  _flag.gameObject.transform.position = this.gameObject.transform.position;
     }
     void FlagText()
     {
-        if (GetFlag) { return; }
-        if (HitCollider == null) { return; }
-        if (HitCollider.gameObject.CompareTag("Flag"))
+        if (_getFlag) { return; }
+        if (_hitCollider == null) { return; }
+        if (_hitCollider.gameObject.CompareTag("Flag"))
         {
             Debug.Log("Flagにカーソル合わせてるよ！");
             _flagText.enabled = true;

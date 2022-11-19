@@ -5,11 +5,12 @@ using UnityEngine.UI;
 public class PlayerReload : MonoBehaviour
 {
     [Header("リロードボタンのインプットマネージャーの名前")]
-    [SerializeField, Tooltip("リロードボタンの名前")] string Reload;
+    [SerializeField, Tooltip("リロードボタンの名前")] string _reload;
     [Header("リロード時間")]
     [SerializeField] float _reloadTime = 3f;
-    [Header("戻してほしい弾数")]
-    public int ReloadCount = 5;
+    /// <summary> リロードしたい数</summary>
+    public int ReloadCount => _reloadCount;
+    [SerializeField] private int _reloadCount;
     PlayerShoot _playerShoot;
     [Header("UI")]
     [SerializeField] Text _reloadText;
