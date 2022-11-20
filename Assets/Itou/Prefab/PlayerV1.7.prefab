@@ -853,7 +853,7 @@ PrefabInstance:
     - target: {fileID: 7439705821908561143, guid: f35fbb6d6f337a54c94f2921b430e155,
         type: 3}
       propertyPath: m_Name
-      value: PlayerV1.6
+      value: PlayerV1.7
       objectReference: {fileID: 0}
     - target: {fileID: 7439705821908561145, guid: f35fbb6d6f337a54c94f2921b430e155,
         type: 3}
@@ -950,7 +950,9 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 7597699048706484595, guid: f35fbb6d6f337a54c94f2921b430e155, type: 3}
+    - {fileID: 2398056014859872715, guid: f35fbb6d6f337a54c94f2921b430e155, type: 3}
   m_SourcePrefab: {fileID: 100100000, guid: f35fbb6d6f337a54c94f2921b430e155, type: 3}
 --- !u!1 &662472100630488481 stripped
 GameObject:
@@ -976,7 +978,7 @@ MonoBehaviour:
   _shootRange: 20
   _shootPower: 10
   _camera: {fileID: 662472101422936304}
-  _remainingBulletsText: {fileID: 316016705}
+  _bulletImage: []
   _shot: Fire1
 --- !u!114 &1459093957
 MonoBehaviour:
@@ -993,8 +995,8 @@ MonoBehaviour:
   Reload: R
   _reloadTime: 3
   ReloadCount: 10
-  _remainingBulletsText: {fileID: 316016705}
   _reloadText: {fileID: 1671829794}
+  _crosshair: {fileID: 0}
 --- !u!114 &1459093962
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1011,6 +1013,9 @@ MonoBehaviour:
   _shootRange: 5
   _flagText: {fileID: 0}
   _camera: {fileID: 662472101422936304}
+  _carrySpeed: 3
+  GetFlag: 0
+  _getFlagButtonName: 
 --- !u!4 &662472100630488491 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7439705821908561149, guid: f35fbb6d6f337a54c94f2921b430e155,

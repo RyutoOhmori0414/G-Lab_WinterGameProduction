@@ -5,15 +5,16 @@ using UnityEngine.UI;
 public class PlayerReload : MonoBehaviour
 {
     [Header("リロードボタンのインプットマネージャーの名前")]
-    [SerializeField, Tooltip("リロードボタンの名前")] string Reload;
+    [SerializeField, Tooltip("リロードボタンの名前")] string _reload;
     [Header("リロード時間")]
     [SerializeField] float _reloadTime = 3f;
-    [Header("戻してほしい弾数")]
-    public int ReloadCount = 10;
+    /// <summary> リロードしたい数</summary>
+    public int ReloadCount => _reloadCount;
+    [SerializeField] private int _reloadCount;
     PlayerShoot _playerShoot;
     [Header("UI")]
-    [SerializeField] Text _remainingBulletsText;
     [SerializeField] Text _reloadText;
+    [SerializeField] Image _crosshair;
 
     private void Start()
     {
@@ -25,17 +26,25 @@ public class PlayerReload : MonoBehaviour
         //if (Input.GetButtonDown(Reload))
         if (Input.GetKeyDown(KeyCode.R))
         {
-            StartCoroutine(ReloadAction());
+            if (_playerShoot.RemainingBullets != ReloadCount)
+            {
+                StartCoroutine(ReloadAction());
+            }
         }
     }
     public IEnumerator ReloadAction()
     {
         _playerShoot.enabled = false;
         _reloadText.enabled = true;
+        _crosshair.enabled = false;
         yield return new WaitForSeconds(_reloadTime);
         _playerShoot.RemainingBullets = ReloadCount;
-        _remainingBulletsText.text = $"{_playerShoot.RemainingBullets} / {ReloadCount}";
         _reloadText.enabled = false;
         _playerShoot.enabled = true;
+        _crosshair.enabled = true;
+        for (int i = 0; i < ReloadCount; i++)
+        {
+            _playerShoot.BulletImage[i].color = Color.white;
+        }
     }
 }
