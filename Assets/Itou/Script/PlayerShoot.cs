@@ -18,6 +18,8 @@ public class PlayerShoot : MonoBehaviour
     [SerializeField] Camera _camera;
     //[SerializeField] Text _remainingBulletsText;
     [SerializeField] List<Image> _bulletImage = new();
+    [Header("Animator")]
+    [SerializeField] Animator animatorObject;
     [Header("発射ボタンのインプットマネージャーの名前")]
     [SerializeField, Tooltip("発射ボタンの名前")] string _shot;
     PlayerReload _playerReload;
@@ -49,5 +51,6 @@ public class PlayerShoot : MonoBehaviour
         go.transform.position = _camera.transform.position;
         go.transform.LookAt(_muzzle);
         go.GetComponent<Rigidbody>().AddForce(go.transform.forward * _shootPower, ForceMode.Impulse);
+        animatorObject.SetTrigger("ThrowTrigger");
     }
 }

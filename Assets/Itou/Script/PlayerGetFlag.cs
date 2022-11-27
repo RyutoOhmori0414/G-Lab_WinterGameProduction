@@ -71,7 +71,6 @@ public class PlayerGetFlag : MonoBehaviour
             _getFlag = true;
             _flagText.enabled = false;
         }
-
     }
     void GetFlagEnum()
     {

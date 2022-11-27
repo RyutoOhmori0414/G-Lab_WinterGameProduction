@@ -1472,6 +1472,21 @@ PrefabInstance:
       propertyPath: _playerMove
       value: 
       objectReference: {fileID: 4578207461255089266}
+    - target: {fileID: 4023220104813541105, guid: f35fbb6d6f337a54c94f2921b430e155,
+        type: 3}
+      propertyPath: _playerShoot
+      value: 
+      objectReference: {fileID: 3887925884079763585}
+    - target: {fileID: 4023220104813541105, guid: f35fbb6d6f337a54c94f2921b430e155,
+        type: 3}
+      propertyPath: _playerReload
+      value: 
+      objectReference: {fileID: 770572268}
+    - target: {fileID: 4023220104813541105, guid: f35fbb6d6f337a54c94f2921b430e155,
+        type: 3}
+      propertyPath: _playerGetFlag
+      value: 
+      objectReference: {fileID: 770572259}
     - target: {fileID: 7137593617627010432, guid: f35fbb6d6f337a54c94f2921b430e155,
         type: 3}
       propertyPath: _muzzle
@@ -1487,7 +1502,7 @@ PrefabInstance:
     - target: {fileID: 7439705821908561143, guid: f35fbb6d6f337a54c94f2921b430e155,
         type: 3}
       propertyPath: m_Name
-      value: PlayerV1.7
+      value: PlayerV2.0
       objectReference: {fileID: 0}
     - target: {fileID: 7439705821908561143, guid: f35fbb6d6f337a54c94f2921b430e155,
         type: 3}
@@ -1614,10 +1629,20 @@ PrefabInstance:
       propertyPath: m_LocalRotation.z
       value: -0
       objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 7597699048706484595, guid: f35fbb6d6f337a54c94f2921b430e155, type: 3}
-    - {fileID: 2398056014859872715, guid: f35fbb6d6f337a54c94f2921b430e155, type: 3}
+    m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: f35fbb6d6f337a54c94f2921b430e155, type: 3}
+--- !u!114 &3887925884079763585 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 7597699048706484595, guid: f35fbb6d6f337a54c94f2921b430e155,
+    type: 3}
+  m_PrefabInstance: {fileID: 6666696314143103474}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4304308741448414469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b0009bbf024afeb45800fe15d3d153d1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!20 &4304308740630274132 stripped
 Camera:
   m_CorrespondingSourceObject: {fileID: 7439705822726699430, guid: f35fbb6d6f337a54c94f2921b430e155,
@@ -1675,6 +1700,31 @@ GameObject:
     type: 3}
   m_PrefabInstance: {fileID: 6666696314143103474}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &770572259
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4304308741448414469}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e406d03db86fe494798ea7f021cacee0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _crosshair: {fileID: 863914825}
+  _shootRange: 5
+  _camera: {fileID: 4304308740630274132}
+  _layerMask:
+    serializedVersion: 2
+    m_Bits: 2147483647
+  _getFlagButtonName: Jump
+  _candyIcon: {fileID: 448377596}
+  _light: {fileID: 575337497}
+  _flagText: {fileID: 0}
+  _carrySpeed: 3
+  HitCollider: {fileID: 0}
+  _hitCollider: {fileID: 0}
 --- !u!114 &770572265
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1687,7 +1737,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0009bbf024afeb45800fe15d3d153d1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  RemainingBullets: 5
+  _remainingBullets: 5
   _bulletPrefab: {fileID: 4017265334761364259, guid: aa6ebba63a9a47d4f9a2f8895939a5fd,
     type: 3}
   _muzzle: {fileID: 1552561300}
@@ -1713,36 +1763,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2c2fa2b19d6ac4e43a3634d990641f50, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Reload: R
+  _reload: 
   _reloadTime: 3
-  ReloadCount: 5
+  _reloadCount: 0
   _reloadText: {fileID: 414443275}
   _crosshair: {fileID: 863914825}
---- !u!114 &770572259
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4304308741448414469}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e406d03db86fe494798ea7f021cacee0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _crosshair: {fileID: 863914825}
-  _shootRange: 5
-  _camera: {fileID: 4304308740630274132}
-  _layerMask:
-    serializedVersion: 2
-    m_Bits: 2147483647
-  _getFlagButtonName: Jump
-  _candyIcon: {fileID: 448377596}
-  _light: {fileID: 575337497}
-  _flagText: {fileID: 0}
-  _carrySpeed: 3
-  HitCollider: {fileID: 0}
-  GetFlag: 0
 --- !u!4 &4304308741448414479 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 7439705821908561149, guid: f35fbb6d6f337a54c94f2921b430e155,

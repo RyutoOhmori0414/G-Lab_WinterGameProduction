@@ -18,6 +18,8 @@ public class PlayerMove : MonoBehaviour
     Rigidbody _rb = default;
     [Header("タグ関連")]
     [SerializeField] string _speedUpTag = "SpeedUp";
+    [Header("Animator")]
+    [SerializeField] Animator _animatorObject;
     public float MoveSpeedDefault { get => _moveSpeedDefault; set => _moveSpeedDefault = value; }
     public float MoveSpeedPowerUp { get => _moveSpeedPowerUp; set => _moveSpeedPowerUp = value; }
     public float MoveSpeed { get => _moveSpeed; set => _moveSpeed = value; }
@@ -39,6 +41,11 @@ public class PlayerMove : MonoBehaviour
         // 移動の入力がない時は回転させない。入力がある時はその方向にキャラクターを向ける。
         if (dir != Vector3.zero) this.transform.forward = dir;
         _rb.velocity = dir.normalized * _moveSpeed + Vector3.up * _rb.velocity.y;
+        AnimationKun(dir.magnitude);
+    }
+    void AnimationKun(float Speed)
+    {
+        _animatorObject.SetFloat("WalkFloat", Speed);
     }
     private void OnTriggerEnter(Collider other)
     {
