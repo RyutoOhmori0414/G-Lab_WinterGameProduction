@@ -11778,6 +11778,26 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2757149038329621248, guid: e779f06cb01808d47ae582b2482b2b01,
+        type: 3}
+      propertyPath: m_Camera
+      value: 
+      objectReference: {fileID: 437952912}
+    - target: {fileID: 2757149038329621248, guid: e779f06cb01808d47ae582b2482b2b01,
+        type: 3}
+      propertyPath: m_RenderMode
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 2757149038329621248, guid: e779f06cb01808d47ae582b2482b2b01,
+        type: 3}
+      propertyPath: m_TargetDisplay
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 2757149038329621251, guid: e779f06cb01808d47ae582b2482b2b01,
+        type: 3}
+      propertyPath: m_UiScaleMode
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2757149039016116273, guid: e779f06cb01808d47ae582b2482b2b01,
         type: 3}
       propertyPath: m_IsActive
