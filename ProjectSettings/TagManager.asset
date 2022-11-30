@@ -17,14 +17,14 @@ TagManager:
   - UI
   - BluePlayer
   - RedPlayer
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Camera1P
+  - Camera2P
+  - Camera3P
+  - Camera4P
+  - Body1P
+  - Body2P
+  - Body3P
+  - Body4P
   - 
   - 
   - 

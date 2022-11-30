@@ -38,6 +38,7 @@ public class PlayerController : MonoBehaviour
     int _currentHP;
     bool _isLoad = false;
     bool _isCandyFlag;
+    bool _isTrigger;
 
     private void Start()
     {
@@ -51,6 +52,7 @@ public class PlayerController : MonoBehaviour
     {
         //入力関係を変数に代入
         float v = Input.GetAxisRaw(_verticalName);
+        Debug.Log(v);
         float h = Input.GetAxisRaw(_horizontalName);
 
         // 上下入力を行く戻るに、左右をそのまま動くようにした
@@ -70,17 +72,22 @@ public class PlayerController : MonoBehaviour
         _rb.velocity = dir.normalized * _moveSpeed + Vector3.up * y;
         _anim.SetFloat("WalkFloat", dir.magnitude);
 
-        if (Input.GetButtonDown(_attackName) && _currentBulletCount > 0 && !_isLoad && !_isCandyFlag)
+        if (Input.GetAxisRaw(_attackName) > 0 && _currentBulletCount > 0 && !_isLoad && !_isCandyFlag && _isTrigger)
         {
             GameObject obj = Instantiate(_snowBall);
             obj.transform.position = _muzzle.position;
             obj.transform.forward = Camera.main.transform.forward;
             _anim.SetTrigger("ThrowTrigger");
+            _isTrigger = false;
             _currentBulletCount--;
             _pUIController.BulletUIUpdate(_currentBulletCount);
         }// 雪玉を発射する
+        else if (Input.GetAxisRaw(_attackName) == 0)
+        {
+            _isTrigger = true;
+        }
 
-        if (Input.GetButtonDown(_reloadName) && _currentBulletCount != _maxBulletCount)
+        if (Input.GetButtonDown(_reloadName)&& _currentBulletCount != _maxBulletCount)
         {
             StartCoroutine(BulletReload());
         }// リロード
