@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using CriWare;
 
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
@@ -90,6 +91,8 @@ public class PlayerController : MonoBehaviour
         if (Input.GetButtonDown(_reloadName)&& _currentBulletCount != _maxBulletCount)
         {
             StartCoroutine(BulletReload());
+            CriAtomSource criAtomSource = new CriAtomSource();
+            criAtomSource.Play();
         }// ÉäÉçÅ[Éh
     }
 
