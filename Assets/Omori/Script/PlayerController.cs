@@ -1,4 +1,4 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -8,29 +8,31 @@ using CriWare;
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerController : MonoBehaviour
 {
-    [Tooltip("ƒvƒŒƒCƒ„[‚ÌˆÚ“®ƒXƒs[ƒh"), SerializeField]
+    [Tooltip("ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç§»å‹•ã‚¹ãƒ”ãƒ¼ãƒ‰"), SerializeField]
     float _moveSpeed = 5f;
-    [Tooltip("”­Ë‚·‚éá‹Ê"), SerializeField]
+    [Tooltip("ç™ºå°„ã™ã‚‹é›ªç‰"), SerializeField]
     GameObject _snowBall;
-    [Tooltip("eŒû"), SerializeField]
+    [Tooltip("éŠƒå£"), SerializeField]
     Transform _muzzle;
-    [Tooltip("’e‚ÌÅ‘å”"), SerializeField]
+    [Tooltip("å¼¾ã®æœ€å¤§æ•°"), SerializeField]
     int _maxBulletCount = 5;
-    [Tooltip("ƒŠƒ[ƒh‚ÌŠÔ"), SerializeField]
+    [Tooltip("ãƒªãƒ­ãƒ¼ãƒ‰ã®æ™‚é–“"), SerializeField]
     float _reloadTime = 2;
-    [Tooltip("HP‚ÌÅ‘å”"), SerializeField]
+    [Tooltip("HPã®æœ€å¤§æ•°"), SerializeField]
     int _maxHP = 3;
     [SerializeField]
     Animator _anim;
+    [SerializeField]
+    AudioController _audioController;
 
-    [Header("“ü—ÍŠÖŒW")]
-    [Tooltip("ã‰º“ü—Í"), SerializeField]
+    [Header("å…¥åŠ›é–¢ä¿‚")]
+    [Tooltip("ä¸Šä¸‹å…¥åŠ›"), SerializeField]
     string _verticalName = "Vertical";
-    [Tooltip("¶‰E“ü—Í"), SerializeField]
+    [Tooltip("å·¦å³å…¥åŠ›"), SerializeField]
     string _horizontalName = "Horizontal";
-    [Tooltip("UŒ‚"), SerializeField]
+    [Tooltip("æ”»æ’ƒ"), SerializeField]
     string _attackName = "Fire1";
-    [Tooltip("ƒŠƒ[ƒh"), SerializeField]
+    [Tooltip("ãƒªãƒ­ãƒ¼ãƒ‰"), SerializeField]
     string _reloadName;
 
     Rigidbody _rb;
@@ -51,23 +53,23 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
-        //“ü—ÍŠÖŒW‚ğ•Ï”‚É‘ã“ü
+        //å…¥åŠ›é–¢ä¿‚ã‚’å¤‰æ•°ã«ä»£å…¥
         float v = Input.GetAxisRaw(_verticalName);
         Debug.Log(v);
         float h = Input.GetAxisRaw(_horizontalName);
 
-        // ã‰º“ü—Í‚ğs‚­–ß‚é‚ÉA¶‰E‚ğ‚»‚Ì‚Ü‚Ü“®‚­‚æ‚¤‚É‚µ‚½
+        // ä¸Šä¸‹å…¥åŠ›ã‚’è¡Œãæˆ»ã‚‹ã«ã€å·¦å³ã‚’ãã®ã¾ã¾å‹•ãã‚ˆã†ã«ã—ãŸ
         Vector3 dir = Vector3.forward * v + Vector3.right * h;
-        // dir‚ÌŒü‚«‚ÌŠî€‚ğƒvƒŒƒCƒ„[‚ÌƒJƒƒ‰‚É‚µ‚½ 
-        dir = Camera.main.transform.TransformDirection(dir); // ‚±‚±‚ÍƒJƒƒ‰‚ğ‘‚â‚µ‚½Û‚É—v’²®
-        // ƒJƒƒ‰‚Ìc‚ÌƒxƒNƒgƒ‹‚ğƒvƒŒƒCƒ„[‚Ì“®‚«‚É”½‰f‚³‚¹‚È‚¢
+        // dirã®å‘ãã®åŸºæº–ã‚’ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚«ãƒ¡ãƒ©ã«ã—ãŸ 
+        dir = Camera.main.transform.TransformDirection(dir); // ã“ã“ã¯ã‚«ãƒ¡ãƒ©ã‚’å¢—ã‚„ã—ãŸéš›ã«è¦èª¿æ•´
+        // ã‚«ãƒ¡ãƒ©ã®ç¸¦ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‹•ãã«åæ˜ ã•ã›ãªã„
         dir.y = 0;
-        // “ü—Í‚ª‚È‚¯‚ê‚Î‰ñ“]‚µ‚È‚¢
+        // å…¥åŠ›ãŒãªã‘ã‚Œã°å›è»¢ã—ãªã„
         if (dir != Vector3.zero)
         {
             this.transform.forward = dir;
         }
-        // ‚’¼•ûŒü‚Ì‘¬“x‚ğ‚»‚Ì‚Ü‚Ü‚É‚·‚é
+        // å‚ç›´æ–¹å‘ã®é€Ÿåº¦ã‚’ãã®ã¾ã¾ã«ã™ã‚‹
         float y = _rb.velocity.y;
 
         _rb.velocity = dir.normalized * _moveSpeed + Vector3.up * y;
@@ -82,7 +84,7 @@ public class PlayerController : MonoBehaviour
             _isTrigger = false;
             _currentBulletCount--;
             _pUIController.BulletUIUpdate(_currentBulletCount);
-        }// á‹Ê‚ğ”­Ë‚·‚é
+        }// é›ªç‰ã‚’ç™ºå°„ã™ã‚‹
         else if (Input.GetAxisRaw(_attackName) == 0)
         {
             _isTrigger = true;
@@ -93,11 +95,12 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(BulletReload());
             CriAtomSource criAtomSource = new CriAtomSource();
             criAtomSource.Play();
-        }// ƒŠƒ[ƒh
+            _audioController.PlaySE(AudioController.CueSheetName.CueSheet_se, "SE_ReLoad");
+        }// ãƒªãƒ­ãƒ¼ãƒ‰
     }
 
     /// <summary>
-    /// ƒŠƒ[ƒh‚Ìˆ—
+    /// ãƒªãƒ­ãƒ¼ãƒ‰ã®å‡¦ç†
     /// </summary>
     /// <returns></returns>
     IEnumerator BulletReload()

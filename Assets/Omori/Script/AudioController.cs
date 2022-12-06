@@ -7,34 +7,22 @@ using UnityEngine;
 public class AudioController : MonoBehaviour
 {
     [Header("SE")]
-    [SerializeField] CriAtomSource _attack;
-    [SerializeField] CriAtomSource _buffItem;
-    [SerializeField] CriAtomSource _pushButton;
-    [SerializeField] CriAtomSource _getCandy;
-    [SerializeField] CriAtomSource _damage;
-    [SerializeField] CriAtomSource _reload;
-    [SerializeField] CriAtomSource _run;
-    [SerializeField] CriAtomSource _stan;
+    [SerializeField] CriAtomSource _seSource;
     [Header("ME")]
     [SerializeField] CriAtomSource _win;
     [SerializeField] CriAtomSource _lose;
 
-    public void Play(AudioName audioName)
+    public void PlaySE(CueSheetName audioName, string cueName)
     {
-
+        _seSource.cueSheet = audioName.ToString();
+        _seSource.cueName = cueName;
+        _seSource.Play();
     }
 
-    public enum AudioName
+    public enum CueSheetName
     {
-        Attack,
-        Buff,
-        PushButton,
-        GetCandy,
-        Damage,
-        Reload,
-        Run,
-        Stan,
-        Win,
-        lose
+        CueSheet_se,
+        CueSheet_me,
+        CueSheet_bgm
     }
 }
