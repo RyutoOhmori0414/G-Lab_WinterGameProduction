@@ -16,14 +16,18 @@ public class PlayerController : MonoBehaviour
     Transform _muzzle;
     [Tooltip("弾の最大数"), SerializeField]
     int _maxBulletCount = 5;
-    [Tooltip("リロードの時間"), SerializeField]
+    [Tooltip("リロードの秒数"), SerializeField]
     float _reloadTime = 2;
+    [Tooltip("スタンしている秒数")]
+    float _stanTime = 3f;
     [Tooltip("HPの最大数"), SerializeField]
     int _maxHP = 3;
+    [Tooltip("プレイヤーのカメラ"),SerializeField]
+    Camera _camera;
     [SerializeField]
     Animator _anim;
     [SerializeField]
-    AudioController _audioController;
+    SEAudioController _audioController;
 
     [Header("入力関係")]
     [Tooltip("上下入力"), SerializeField]
@@ -39,8 +43,10 @@ public class PlayerController : MonoBehaviour
     PlayerUIController _pUIController;
     int _currentBulletCount;
     int _currentHP;
-    bool _isLoad = false;
-    bool _isCandyFlag;
+    /// <summary>現在のプレイヤーの状態</summary>
+    PlayerState _state;
+    /// <summary>現在のプレイヤーの状態</summary>
+    public PlayerState _currentPlayerState { get { return _state; } }
     bool _isTrigger;
 
     private void Start()
@@ -55,13 +61,12 @@ public class PlayerController : MonoBehaviour
     {
         //入力関係を変数に代入
         float v = Input.GetAxisRaw(_verticalName);
-        Debug.Log(v);
         float h = Input.GetAxisRaw(_horizontalName);
 
         // 上下入力を行く戻るに、左右をそのまま動くようにした
-        Vector3 dir = Vector3.forward * v + Vector3.right * h;
+         Vector3 dirRaw = Vector3.forward * v + Vector3.right * h;
         // dirの向きの基準をプレイヤーのカメラにした 
-        dir = Camera.main.transform.TransformDirection(dir); // ここはカメラを増やした際に要調整
+        Vector3 dir = _camera.transform.TransformDirection(dirRaw);
         // カメラの縦のベクトルをプレイヤーの動きに反映させない
         dir.y = 0;
         // 入力がなければ回転しない
@@ -73,17 +78,22 @@ public class PlayerController : MonoBehaviour
         float y = _rb.velocity.y;
 
         _rb.velocity = dir.normalized * _moveSpeed + Vector3.up * y;
-        _anim.SetFloat("WalkFloat", dir.magnitude);
+        _anim.SetFloat("WalkFloat", _rb.velocity.magnitude);
 
-        if (Input.GetAxisRaw(_attackName) > 0 && _currentBulletCount > 0 && !_isLoad && !_isCandyFlag && _isTrigger)
+        if (Input.GetAxisRaw(_attackName) > 0 && 
+            _currentBulletCount > 0 && 
+            _state != PlayerState.Normal && 
+            _isTrigger)
         {
             GameObject obj = Instantiate(_snowBall);
             obj.transform.position = _muzzle.position;
-            obj.transform.forward = Camera.main.transform.forward;
+            obj.transform.forward = _camera.transform.forward;
             _anim.SetTrigger("ThrowTrigger");
             _isTrigger = false;
             _currentBulletCount--;
             _pUIController.BulletUIUpdate(_currentBulletCount);
+            // SE
+            _audioController.PlaySE(CueSheetName.CueSheet_se, "SE_Attack");
         }// 雪玉を発射する
         else if (Input.GetAxisRaw(_attackName) == 0)
         {
@@ -95,7 +105,8 @@ public class PlayerController : MonoBehaviour
             StartCoroutine(BulletReload());
             CriAtomSource criAtomSource = new CriAtomSource();
             criAtomSource.Play();
-            _audioController.PlaySE(AudioController.CueSheetName.CueSheet_se, "SE_ReLoad");
+            // SE
+            _audioController.PlaySE(CueSheetName.CueSheet_se, "SE_ReLoad");
         }// リロード
     }
 
@@ -107,11 +118,44 @@ public class PlayerController : MonoBehaviour
     {
         _currentBulletCount = _maxBulletCount;
         _pUIController.Reload();
-        _isLoad = true;
+        _state = PlayerState.isLoad;
         yield return new WaitForSeconds(_reloadTime);
         _pUIController.BulletUIUpdate(_currentBulletCount);
         _pUIController.Reload();
-        _isLoad = false;
+        _state = PlayerState.Normal;
+    }
+
+    IEnumerator Stan()
+    {
+        _state = PlayerState.Stan;
+        yield return new WaitForSeconds(_);
+    }
+
+    /// <summary>
+    /// 現在のプレイヤーの状態
+    /// </summary>
+    public enum PlayerState
+    {
+        Normal,
+        isFlag,
+        isLoad,
+        SpeedUp,
+        Stan
+    }
+
+    /// <summary>
+    /// プレイヤーが死ぬときの処理
+    /// </summary>
+    public void PlayerDeath()
+    {
+        if (_state == PlayerState.isFlag)
+        {
+
+        } // リスポーンする処理を書く
+        else
+        {
+
+        } // スタンする処理を書く
     }
 
     private void OnTriggerEnter(Collider other)
@@ -120,6 +164,14 @@ public class PlayerController : MonoBehaviour
         {
             _currentHP--;
             _pUIController.HpUIUpdate(_currentHP);
+        } // 雪玉が当たったときに自分のHPを減らす処理未テスト
+        else if (other.gameObject.CompareTag("Flag"))
+        {
+            _state = PlayerState.isFlag;
+        } // フラグを取った際の処理
+        else if (other.gameObject.CompareTag("SpeedUp"))
+        {
+            _state = PlayerState.SpeedUp;
         }
     }
 }
