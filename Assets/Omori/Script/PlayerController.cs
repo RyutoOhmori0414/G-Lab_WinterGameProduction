@@ -10,6 +10,8 @@ public class PlayerController : MonoBehaviour
 {
     [Tooltip("プレイヤーの移動スピード"), SerializeField]
     float _moveSpeed = 5f;
+    [Tooltip("スピードアップ後の移動スピード"), SerializeField]
+    float _powerUpSpeed = 7f;
     [Tooltip("発射する雪玉"), SerializeField]
     GameObject _snowBall;
     [Tooltip("銃口"), SerializeField]
@@ -55,59 +57,70 @@ public class PlayerController : MonoBehaviour
         _pUIController = GetComponent<PlayerUIController>();
         _currentBulletCount = _maxBulletCount;
         _currentHP = _maxHP;
+        _state = PlayerState.SetUp;
     }
 
     private void Update()
     {
-        //入力関係を変数に代入
-        float v = Input.GetAxisRaw(_verticalName);
-        float h = Input.GetAxisRaw(_horizontalName);
-
-        // 上下入力を行く戻るに、左右をそのまま動くようにした
-         Vector3 dirRaw = Vector3.forward * v + Vector3.right * h;
-        // dirの向きの基準をプレイヤーのカメラにした 
-        Vector3 dir = _camera.transform.TransformDirection(dirRaw);
-        // カメラの縦のベクトルをプレイヤーの動きに反映させない
-        dir.y = 0;
-        // 入力がなければ回転しない
-        if (dir != Vector3.zero)
+        if (_state != PlayerState.Stan)
         {
-            this.transform.forward = dir;
+            //入力関係を変数に代入
+            float v = Input.GetAxisRaw(_verticalName);
+            float h = Input.GetAxisRaw(_horizontalName);
+
+            // 上下入力を行く戻るに、左右をそのまま動くようにした
+            Vector3 dirRaw = Vector3.forward * v + Vector3.right * h;
+            // dirの向きの基準をプレイヤーのカメラにした 
+            Vector3 dir = _camera.transform.TransformDirection(dirRaw);
+            // カメラの縦のベクトルをプレイヤーの動きに反映させない
+            dir.y = 0;
+            // 入力がなければ回転しない
+            if (dir != Vector3.zero)
+            {
+                this.transform.forward = dir;
+            }
+
+            if (_state == PlayerState.SpeedUp)
+            {
+                _rb.velocity = dir.normalized * _powerUpSpeed + Vector3.up * _rb.velocity.y;
+            }
+            else
+            {
+                _rb.velocity = dir.normalized * _moveSpeed + Vector3.up * _rb.velocity.y;
+            }
+            _anim.SetFloat("WalkFloat", _rb.velocity.magnitude);
+
+            if (Input.GetAxisRaw(_attackName) > 0 &&
+                _currentBulletCount > 0 &&
+                _state != PlayerState.isFlag &&
+                _isTrigger)
+            {
+                GameObject obj = Instantiate(_snowBall);
+                obj.transform.position = _muzzle.position;
+                obj.transform.forward = _camera.transform.forward;
+                _anim.SetTrigger("ThrowTrigger");
+                _isTrigger = false;
+                _currentBulletCount--;
+                _pUIController.BulletUIUpdate(_currentBulletCount);
+                // SE
+                _audioController.PlaySE(CueSheetName.CueSheet_se, "SE_Attack");
+            }// 雪玉を発射する
+            else if (Input.GetAxisRaw(_attackName) <= 0.1f)
+            {
+                _isTrigger = true;
+            }
+
+            Debug.Log(_isTrigger);
+
+            if (Input.GetButtonDown(_reloadName) && _currentBulletCount != _maxBulletCount)
+            {
+                StartCoroutine(BulletReload());
+                CriAtomSource criAtomSource = new CriAtomSource();
+                criAtomSource.Play();
+                // SE
+                _audioController.PlaySE(CueSheetName.CueSheet_se, "SE_ReLoad");
+            }// リロード
         }
-        // 垂直方向の速度をそのままにする
-        float y = _rb.velocity.y;
-
-        _rb.velocity = dir.normalized * _moveSpeed + Vector3.up * y;
-        _anim.SetFloat("WalkFloat", _rb.velocity.magnitude);
-
-        if (Input.GetAxisRaw(_attackName) > 0 && 
-            _currentBulletCount > 0 && 
-            _state != PlayerState.Normal && 
-            _isTrigger)
-        {
-            GameObject obj = Instantiate(_snowBall);
-            obj.transform.position = _muzzle.position;
-            obj.transform.forward = _camera.transform.forward;
-            _anim.SetTrigger("ThrowTrigger");
-            _isTrigger = false;
-            _currentBulletCount--;
-            _pUIController.BulletUIUpdate(_currentBulletCount);
-            // SE
-            _audioController.PlaySE(CueSheetName.CueSheet_se, "SE_Attack");
-        }// 雪玉を発射する
-        else if (Input.GetAxisRaw(_attackName) == 0)
-        {
-            _isTrigger = true;
-        }
-
-        if (Input.GetButtonDown(_reloadName)&& _currentBulletCount != _maxBulletCount)
-        {
-            StartCoroutine(BulletReload());
-            CriAtomSource criAtomSource = new CriAtomSource();
-            criAtomSource.Play();
-            // SE
-            _audioController.PlaySE(CueSheetName.CueSheet_se, "SE_ReLoad");
-        }// リロード
     }
 
     /// <summary>
@@ -128,7 +141,10 @@ public class PlayerController : MonoBehaviour
     IEnumerator Stan()
     {
         _state = PlayerState.Stan;
-        yield return new WaitForSeconds(_);
+        _audioController.PlaySE(CueSheetName.CueSheet_se_loop, "SE_Stan");
+        yield return new WaitForSeconds(_stanTime);
+        _state = PlayerState.Normal;
+        yield break;
     }
 
     /// <summary>
@@ -136,11 +152,17 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public enum PlayerState
     {
+        SetUp,
         Normal,
         isFlag,
         isLoad,
         SpeedUp,
         Stan
+    }
+
+    public void GameStart()
+    {
+        _state = PlayerState.Normal;
     }
 
     /// <summary>
@@ -154,7 +176,7 @@ public class PlayerController : MonoBehaviour
         } // リスポーンする処理を書く
         else
         {
-
+            StartCoroutine(Stan());
         } // スタンする処理を書く
     }
 
@@ -164,12 +186,16 @@ public class PlayerController : MonoBehaviour
         {
             _currentHP--;
             _pUIController.HpUIUpdate(_currentHP);
+            if (_currentHP >= 0)
+            {
+                PlayerDeath();
+            }
         } // 雪玉が当たったときに自分のHPを減らす処理未テスト
         else if (other.gameObject.CompareTag("Flag"))
         {
             _state = PlayerState.isFlag;
         } // フラグを取った際の処理
-        else if (other.gameObject.CompareTag("SpeedUp"))
+        else if (other.gameObject.CompareTag("SpeedUp") && _state != PlayerState.isFlag)
         {
             _state = PlayerState.SpeedUp;
         }
