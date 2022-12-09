@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1481177033174053898}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.405, y: 0.811, z: 0.633}
+  m_LocalPosition: {x: 0.40499973, y: 0.8109999, z: 1}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -176,6 +176,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _moveSpeed: 5
+  _powerUpSpeed: 7
   _snowBall: {fileID: 7058505999972904928, guid: 81608522dfd448d48973361d28546949,
     type: 3}
   _muzzle: {fileID: 4865947043594855757}
@@ -183,6 +184,8 @@ MonoBehaviour:
   _reloadTime: 2
   _maxHP: 3
   _camera: {fileID: 0}
+  _responeTransform: {fileID: 0}
+  _playerTeam: 0
   _anim: {fileID: 2118052329597563659}
   _audioController: {fileID: 555655131317645935}
   _verticalName: Vertical
