@@ -15,6 +15,8 @@ public class GameController : MonoBehaviour
     Transform _teamATransform;
     [Tooltip("Bチームの陣地のTransform"), SerializeField]
     Transform _teamBTransform;
+    [Tooltip("Flagnのprefab"), SerializeField]
+    GameObject _flagPrefab;
 
     float _timer = default;
     /// <summary>Timerが動いているかどうか</summary>
@@ -104,6 +106,18 @@ public class GameController : MonoBehaviour
             // Bチームwin
             // UIのパネルを出す
         }
+    }
+
+    public void FlagRespone(Vector3 _sponePosition)
+    {
+        GameObject tempGO = Instantiate(_flagPrefab);
+        tempGO.transform.position = _sponePosition;
+        _flagTransform = tempGO.transform;
+    }
+
+    public void GetFlag(Transform _playerTransform)
+    {
+        _flagTransform = _playerTransform;
     }
 
     public enum Team

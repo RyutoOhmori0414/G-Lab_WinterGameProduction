@@ -17,7 +17,10 @@ public class GoalController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         // 当たった自軍のプレイヤーが旗を持っていたら勝ち
-        if (other.gameObject /* && 自軍のプレイヤーか？ && 旗を持っているか？*/)
+        PlayerController temp = other.gameObject.GetComponent<PlayerController>();
+
+        if (temp?.CurrentPlayerState == PlayerController.PlayerState.isFlag && 
+            temp?.PlayerTeam == team)
         {
             _gameController.GameEnd(team);
         }

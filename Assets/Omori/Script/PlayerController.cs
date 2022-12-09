@@ -6,7 +6,7 @@ using UnityEngine;
 using CriWare;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IPausable
 {
     [Tooltip("プレイヤーの移動スピード"), SerializeField]
     float _moveSpeed = 5f;
@@ -26,6 +26,10 @@ public class PlayerController : MonoBehaviour
     int _maxHP = 3;
     [Tooltip("プレイヤーのカメラ"),SerializeField]
     Camera _camera;
+    [Tooltip("プレイヤーのリスポーン位置"), SerializeField]
+    Transform _responeTransform;
+    [Tooltip("プレイヤーの陣営"), SerializeField]
+    GameController.Team _playerTeam;
     [SerializeField]
     Animator _anim;
     [SerializeField]
@@ -43,21 +47,26 @@ public class PlayerController : MonoBehaviour
 
     Rigidbody _rb;
     PlayerUIController _pUIController;
+    GameController _gameController;
     int _currentBulletCount;
     int _currentHP;
     /// <summary>現在のプレイヤーの状態</summary>
-    PlayerState _state;
-    /// <summary>現在のプレイヤーの状態</summary>
-    public PlayerState _currentPlayerState { get { return _state; } }
+    PlayerState _state = PlayerState.Pause;
+    PlayerState _lastState = PlayerState.Normal;
     bool _isTrigger;
+
+    public GameController.Team PlayerTeam { get => _playerTeam; }
+    /// <summary>現在のプレイヤーの状態</summary>
+    public PlayerState CurrentPlayerState { get { return _state; } }
+   
 
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
         _pUIController = GetComponent<PlayerUIController>();
+        _gameController = FindObjectOfType<GameController>();
         _currentBulletCount = _maxBulletCount;
         _currentHP = _maxHP;
-        _state = PlayerState.SetUp;
     }
 
     private void Update()
@@ -67,18 +76,13 @@ public class PlayerController : MonoBehaviour
             //入力関係を変数に代入
             float v = Input.GetAxisRaw(_verticalName);
             float h = Input.GetAxisRaw(_horizontalName);
-
+            
             // 上下入力を行く戻るに、左右をそのまま動くようにした
             Vector3 dirRaw = Vector3.forward * v + Vector3.right * h;
             // dirの向きの基準をプレイヤーのカメラにした 
-            Vector3 dir = _camera.transform.TransformDirection(dirRaw);
+            Vector3 dir = transform.TransformDirection(dirRaw);
             // カメラの縦のベクトルをプレイヤーの動きに反映させない
             dir.y = 0;
-            // 入力がなければ回転しない
-            if (dir != Vector3.zero)
-            {
-                this.transform.forward = dir;
-            }
 
             if (_state == PlayerState.SpeedUp)
             {
@@ -88,6 +92,11 @@ public class PlayerController : MonoBehaviour
             {
                 _rb.velocity = dir.normalized * _moveSpeed + Vector3.up * _rb.velocity.y;
             }
+
+            //this.transform.rotation = new Quaternion(transform.rotation.x, _camera.transform.rotation.y ,transform.rotation.z, transform.rotation.w);
+            transform.eulerAngles = new Vector3(transform.rotation.x, _camera.transform.rotation.y * 180 + 360, transform.rotation.z);
+            //transform.Rotate(transform.rotation.x, _camera.transform.rotation.y, transform.rotation.z);
+
             _anim.SetFloat("WalkFloat", _rb.velocity.magnitude);
 
             if (Input.GetAxisRaw(_attackName) > 0 &&
@@ -152,7 +161,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     public enum PlayerState
     {
-        SetUp,
+        Pause,
         Normal,
         isFlag,
         isLoad,
@@ -172,7 +181,16 @@ public class PlayerController : MonoBehaviour
     {
         if (_state == PlayerState.isFlag)
         {
-
+            // リスポーン処理
+            this.transform.position = _responeTransform.position;
+            _state = PlayerState.Normal;
+            // ステータスのリセット
+            _currentBulletCount = _maxBulletCount;
+            _currentHP = _maxHP;
+            _pUIController.BulletUIUpdate(_currentBulletCount);
+            _pUIController.HpUIUpdate(_currentHP);
+            // flagをその位置に出現させる処理　ゲームマネージャーを呼ぶ
+            _gameController.FlagRespone(this.transform.position);
         } // リスポーンする処理を書く
         else
         {
@@ -194,10 +212,23 @@ public class PlayerController : MonoBehaviour
         else if (other.gameObject.CompareTag("Flag"))
         {
             _state = PlayerState.isFlag;
+            _gameController.GetFlag(this.transform);
+            Destroy(other.gameObject);
         } // フラグを取った際の処理
         else if (other.gameObject.CompareTag("SpeedUp") && _state != PlayerState.isFlag)
         {
             _state = PlayerState.SpeedUp;
         }
+    }
+
+    public void Pause()
+    {
+        _lastState = CurrentPlayerState;
+        _state = PlayerState.Pause;
+    }
+
+    public void Resume()
+    {
+        _state = _lastState;
     }
 }
