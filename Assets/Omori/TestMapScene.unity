@@ -5475,6 +5475,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4421094819740191224, guid: e779f06cb01808d47ae582b2482b2b01,
         type: 3}
+      propertyPath: _playerTeam
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4421094819740191224, guid: e779f06cb01808d47ae582b2482b2b01,
+        type: 3}
       propertyPath: _reloadName
       value: ReloadP4
       objectReference: {fileID: 0}
@@ -8520,6 +8525,11 @@ PrefabInstance:
         type: 3}
       propertyPath: _attackName
       value: FireP3
+      objectReference: {fileID: 0}
+    - target: {fileID: 4421094819740191224, guid: e779f06cb01808d47ae582b2482b2b01,
+        type: 3}
+      propertyPath: _playerTeam
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 4421094819740191224, guid: e779f06cb01808d47ae582b2482b2b01,
         type: 3}
