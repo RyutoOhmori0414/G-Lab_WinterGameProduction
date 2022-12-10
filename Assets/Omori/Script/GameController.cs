@@ -43,27 +43,27 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
-        if (_running)
-        {
-            Cursor.visible = false;
-            _timer += Time.deltaTime;
+        //if (_running)
+        //{
+        //    Cursor.visible = false;
+        //    _timer += Time.deltaTime;
 
-            if (_timer > _setUpTime)
-            {
-                // 最初の待ち時間が終わってから行う処理
-                // カウントダウンが終わったらポーズを解除する
-                foreach(var n in _pausables)
-                {
-                    n.Resume();
-                }
-            }
-            if (_timer > _timeLimit + _setUpTime)
-            {
-                // タイムリミットが過ぎたら行う処理
-                TimeOverGameEnd();
-                _running = false;
-            }
-        }
+        //    if (_timer > _setUpTime)
+        //    {
+        //        // 最初の待ち時間が終わってから行う処理
+        //        // カウントダウンが終わったらポーズを解除する
+        //        foreach(var n in _pausables)
+        //        {
+        //            n.Resume();
+        //        }
+        //    }
+        //    if (_timer > _timeLimit + _setUpTime)
+        //    {
+        //        // タイムリミットが過ぎたら行う処理
+        //        TimeOverGameEnd();
+        //        _running = false;
+        //    }
+        //}
 
     }
 

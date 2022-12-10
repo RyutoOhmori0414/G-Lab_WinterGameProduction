@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
 
 public class GoalController : MonoBehaviour
@@ -16,13 +17,15 @@ public class GoalController : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
+        Debug.Log($"{other.gameObject.name}が{this.gameObject.name}と接触しました");
         // 当たった自軍のプレイヤーが旗を持っていたら勝ち
         PlayerController temp = other.gameObject.GetComponent<PlayerController>();
 
         if (temp?.CurrentPlayerState == PlayerController.PlayerState.isFlag && 
-            temp?.PlayerTeam == team)
+            temp?.PlayerTeam != team)
         {
             _gameController.GameEnd(team);
+            Debug.Log("旗を持って相手のゴールに到達しました。");
         }
     }
 }

@@ -119,8 +119,6 @@ public class PlayerController : MonoBehaviour, IPausable
                 _isTrigger = true;
             }
 
-            Debug.Log(_isTrigger);
-
             if (Input.GetButtonDown(_reloadName) && _currentBulletCount != _maxBulletCount)
             {
                 StartCoroutine(BulletReload());
@@ -130,6 +128,8 @@ public class PlayerController : MonoBehaviour, IPausable
                 _audioController.PlaySE(CueSheetName.CueSheet_se, "SE_ReLoad");
             }// リロード
         }
+
+        Debug.Log($"{this.gameObject.name}の状態は{_state.ToString()}");
     }
 
     /// <summary>
@@ -214,6 +214,7 @@ public class PlayerController : MonoBehaviour, IPausable
             _state = PlayerState.isFlag;
             _gameController.GetFlag(this.transform);
             Destroy(other.gameObject);
+            Debug.Log("旗を取りました");
         } // フラグを取った際の処理
         else if (other.gameObject.CompareTag("SpeedUp") && _state != PlayerState.isFlag)
         {
