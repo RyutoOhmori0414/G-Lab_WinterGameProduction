@@ -18,16 +18,19 @@ public class GameController : MonoBehaviour
     [Tooltip("Flagnのprefab"), SerializeField]
     GameObject _flagPrefab;
 
+    MainUIController _mainUIController;
     float _timer = default;
     /// <summary>Timerが動いているかどうか</summary>
     bool _running = false;
     List<IPausable> _pausables = new();
+    bool _gameStart = true;
 
     private void Start()
     {
         _running = true;
         // IPausableを実装しているGamaObjectを探して最初にポーズをかけている
         GameObject[] gameObjects = FindObjectsOfType<GameObject>();
+        _mainUIController = FindObjectOfType<MainUIController>();
 
         foreach(var n in gameObjects)
         {
@@ -43,27 +46,37 @@ public class GameController : MonoBehaviour
 
     private void Update()
     {
-        //if (_running)
-        //{
-        //    Cursor.visible = false;
-        //    _timer += Time.deltaTime;
+        if (_running)
+        {
+            Cursor.visible = false;
+            _timer += Time.deltaTime;
+            if (_timer < _setUpTime)
+            {
+                _mainUIController.CountTextUpdate(_timer);
+            }
+            else if (_timer > _setUpTime && _gameStart)
+            {
+                // 最初の待ち時間が終わってから行う処理
+                // カウントダウンが終わったらポーズを解除する
+                foreach (var n in _pausables)
+                {
+                    n.Resume();
+                }
 
-        //    if (_timer > _setUpTime)
-        //    {
-        //        // 最初の待ち時間が終わってから行う処理
-        //        // カウントダウンが終わったらポーズを解除する
-        //        foreach(var n in _pausables)
-        //        {
-        //            n.Resume();
-        //        }
-        //    }
-        //    if (_timer > _timeLimit + _setUpTime)
-        //    {
-        //        // タイムリミットが過ぎたら行う処理
-        //        TimeOverGameEnd();
-        //        _running = false;
-        //    }
-        //}
+                _mainUIController.CountEnd();
+                _gameStart = false;
+            } // カウントダウンが終わった際に一度だけ行われる
+            else if (_timer > _timeLimit + _setUpTime)
+            {
+                // タイムリミットが過ぎたら行う処理
+                TimeOverGameEnd();
+                _running = false;
+            }
+            else
+            {
+
+            } // ゲーム中の処理
+        }
 
     }
 
