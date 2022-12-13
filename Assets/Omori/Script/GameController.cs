@@ -52,7 +52,7 @@ public class GameController : MonoBehaviour
             _timer += Time.deltaTime;
             if (_timer < _setUpTime)
             {
-                _mainUIController.CountTextUpdate(_timer);
+                _mainUIController.CountTextUpdate(_setUpTime - _timer);
             }
             else if (_timer > _setUpTime && _gameStart)
             {
@@ -71,11 +71,19 @@ public class GameController : MonoBehaviour
                 // タイムリミットが過ぎたら行う処理
                 TimeOverGameEnd();
                 _running = false;
+                _mainUIController.SubCountEnd();
             }
             else
             {
-
+                _mainUIController.SubCountTextUpdate(_timeLimit - (_timer - _setUpTime));
             } // ゲーム中の処理
+        }
+        else
+        {
+            if (Input.anyKeyDown)
+            {
+                _mainUIController.ToTitle();
+            }
         }
 
     }
@@ -88,16 +96,7 @@ public class GameController : MonoBehaviour
             n.Pause();
         }
 
-        if (winTeam == Team.ATeam)
-        {
-            // Aチームwin
-            // UIをpanelを出す
-        }
-        else
-        {
-            // Bチームwin
-            // UIのパネルを出す
-        }
+        _mainUIController.EndGame(winTeam);
     }
 
     void TimeOverGameEnd()
@@ -108,17 +107,7 @@ public class GameController : MonoBehaviour
             n.Pause();
         }
 
-        // フラグがAチームの陣地に近かったら
-        if (Vector3.Distance(_flagTransform.position, _teamATransform.position) < Vector3.Distance(_flagTransform.position, _teamBTransform.position))
-        {
-            // Aチームwin
-            // UIをpanelを出す
-        }
-        else
-        {
-            // Bチームwin
-            // UIのパネルを出す
-        }
+        _mainUIController.DrawGame();
     }
 
     public void FlagRespone(Vector3 _sponePosition)

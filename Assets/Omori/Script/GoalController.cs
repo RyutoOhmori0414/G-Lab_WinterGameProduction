@@ -24,7 +24,7 @@ public class GoalController : MonoBehaviour
         if (temp?.CurrentPlayerState == PlayerController.PlayerState.isFlag && 
             temp?.PlayerTeam != team)
         {
-            _gameController.GameEnd(team);
+            _gameController.GameEnd(temp.PlayerTeam);
             Debug.Log("Šø‚ğ‚Á‚Ä‘Šè‚ÌƒS[ƒ‹‚É“’B‚µ‚Ü‚µ‚½B");
         }
     }
