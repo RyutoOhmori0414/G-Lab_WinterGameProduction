@@ -76,6 +76,8 @@ public class PlayerController : MonoBehaviour, IPausable
             //入力関係を変数に代入
             float v = Input.GetAxisRaw(_verticalName);
             float h = Input.GetAxisRaw(_horizontalName);
+            v = Mathf.Abs(v) > 0.1f ? v : 0f;
+            h = Mathf.Abs(h) > 0.1f ? h : 0f;
             
             // 上下入力を行く戻るに、左右をそのまま動くようにした
             Vector3 dirRaw = Vector3.forward * v + Vector3.right * h;

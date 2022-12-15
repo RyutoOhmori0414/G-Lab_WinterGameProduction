@@ -14436,7 +14436,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ce06acfe6955c74997f815114d4b424, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _timeLimit: 10
+  _timeLimit: 120
   _setUpTime: 3
   _flagTransform: {fileID: 543450652962697708}
   _teamATransform: {fileID: 280159824}
