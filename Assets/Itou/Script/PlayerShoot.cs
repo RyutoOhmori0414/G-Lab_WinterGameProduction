@@ -48,7 +48,7 @@ public class PlayerShoot : MonoBehaviour
         _remainingBullets--;
         _bulletImage[RemainingBullets].gameObject.GetComponent<Image>().color = Color.gray;//’e‚ÌUI‚ªˆêŒÂŒ¸‚é
         var go = Instantiate(_bulletPrefab);
-        go.transform.position = _camera.transform.position;
+        go.transform.position = transform.position;
         go.transform.LookAt(_muzzle);
         go.GetComponent<Rigidbody>().AddForce(go.transform.forward * _shootPower, ForceMode.Impulse);
         animatorObject.SetTrigger("ThrowTrigger");
