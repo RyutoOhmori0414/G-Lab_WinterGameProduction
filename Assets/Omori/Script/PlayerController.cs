@@ -1,104 +1,203 @@
-using System;
+ï»¿using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
 using UnityEngine;
+using CriWare;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IPausable
 {
-    [Tooltip("ƒvƒŒƒCƒ„[‚ÌˆÚ“®ƒXƒs[ƒh"), SerializeField]
+    [Tooltip("ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ç§»å‹•ã‚¹ãƒ”ãƒ¼ãƒ‰"), SerializeField]
     float _moveSpeed = 5f;
-    [Tooltip("”­Ë‚·‚éá‹Ê"), SerializeField]
+    [Tooltip("ã‚¹ãƒ”ãƒ¼ãƒ‰ã‚¢ãƒƒãƒ—å¾Œã®ç§»å‹•ã‚¹ãƒ”ãƒ¼ãƒ‰"), SerializeField]
+    float _powerUpSpeed = 7f;
+    [Tooltip("ç™ºå°„ã™ã‚‹é›ªç‰"), SerializeField]
     GameObject _snowBall;
-    [Tooltip("eŒû"), SerializeField]
+    [Tooltip("éŠƒå£"), SerializeField]
     Transform _muzzle;
-    [Tooltip("’e‚ÌÅ‘å”"), SerializeField]
+    [Tooltip("å¼¾ã®æœ€å¤§æ•°"), SerializeField]
     int _maxBulletCount = 5;
-    [Tooltip("ƒŠƒ[ƒh‚ÌŠÔ"), SerializeField]
+    [Tooltip("ãƒªãƒ­ãƒ¼ãƒ‰ã®ç§’æ•°"), SerializeField]
     float _reloadTime = 2;
-    [Tooltip("HP‚ÌÅ‘å”"), SerializeField]
+    [Tooltip("ã‚¹ã‚¿ãƒ³ã—ã¦ã„ã‚‹ç§’æ•°")]
+    float _stanTime = 3f;
+    [Tooltip("HPã®æœ€å¤§æ•°"), SerializeField]
     int _maxHP = 3;
+    [Tooltip("ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚«ãƒ¡ãƒ©"),SerializeField]
+    Camera _camera;
+    [Tooltip("ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ãƒªã‚¹ãƒãƒ¼ãƒ³ä½ç½®"), SerializeField]
+    Transform _responeTransform;
+    [Tooltip("ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®é™£å–¶"), SerializeField]
+    GameController.Team _playerTeam;
     [SerializeField]
     Animator _anim;
+    [SerializeField]
+    SEAudioController _audioController;
 
-    [Header("“ü—ÍŠÖŒW")]
-    [Tooltip("ã‰º“ü—Í"), SerializeField]
+    [Header("å…¥åŠ›é–¢ä¿‚")]
+    [Tooltip("ä¸Šä¸‹å…¥åŠ›"), SerializeField]
     string _verticalName = "Vertical";
-    [Tooltip("¶‰E“ü—Í"), SerializeField]
+    [Tooltip("å·¦å³å…¥åŠ›"), SerializeField]
     string _horizontalName = "Horizontal";
-    [Tooltip("UŒ‚"), SerializeField]
+    [Tooltip("æ”»æ’ƒ"), SerializeField]
     string _attackName = "Fire1";
-    [Tooltip("ƒŠƒ[ƒh"), SerializeField]
+    [Tooltip("ãƒªãƒ­ãƒ¼ãƒ‰"), SerializeField]
     string _reloadName;
 
     Rigidbody _rb;
     PlayerUIController _pUIController;
+    GameController _gameController;
     int _currentBulletCount;
     int _currentHP;
-    bool _isLoad = false;
-    bool _isCandyFlag;
+    /// <summary>ç¾åœ¨ã®ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®çŠ¶æ…‹</summary>
+    PlayerState _state = PlayerState.Pause;
+    PlayerState _lastState = PlayerState.Normal;
+    bool _isTrigger;
+
+    public GameController.Team PlayerTeam { get => _playerTeam; }
+    /// <summary>ç¾åœ¨ã®ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®çŠ¶æ…‹</summary>
+    public PlayerState CurrentPlayerState { get { return _state; } }
+   
 
     private void Start()
     {
         _rb = GetComponent<Rigidbody>();
         _pUIController = GetComponent<PlayerUIController>();
+        _gameController = FindObjectOfType<GameController>();
         _currentBulletCount = _maxBulletCount;
         _currentHP = _maxHP;
     }
 
     private void Update()
     {
-        //“ü—ÍŠÖŒW‚ğ•Ï”‚É‘ã“ü
-        float v = Input.GetAxisRaw(_verticalName);
-        float h = Input.GetAxisRaw(_horizontalName);
-
-        // ã‰º“ü—Í‚ğs‚­–ß‚é‚ÉA¶‰E‚ğ‚»‚Ì‚Ü‚Ü“®‚­‚æ‚¤‚É‚µ‚½
-        Vector3 dir = Vector3.forward * v + Vector3.right * h;
-        // dir‚ÌŒü‚«‚ÌŠî€‚ğƒvƒŒƒCƒ„[‚ÌƒJƒƒ‰‚É‚µ‚½ 
-        dir = Camera.main.transform.TransformDirection(dir); // ‚±‚±‚ÍƒJƒƒ‰‚ğ‘‚â‚µ‚½Û‚É—v’²®
-        // ƒJƒƒ‰‚Ìc‚ÌƒxƒNƒgƒ‹‚ğƒvƒŒƒCƒ„[‚Ì“®‚«‚É”½‰f‚³‚¹‚È‚¢
-        dir.y = 0;
-        // “ü—Í‚ª‚È‚¯‚ê‚Î‰ñ“]‚µ‚È‚¢
-        if (dir != Vector3.zero)
+        if (_state != PlayerState.Stan)
         {
-            this.transform.forward = dir;
+            //å…¥åŠ›é–¢ä¿‚ã‚’å¤‰æ•°ã«ä»£å…¥
+            float v = Input.GetAxisRaw(_verticalName);
+            float h = Input.GetAxisRaw(_horizontalName);
+            v = Mathf.Abs(v) > 0.1f ? v : 0f;
+            h = Mathf.Abs(h) > 0.1f ? h : 0f;
+            
+            // ä¸Šä¸‹å…¥åŠ›ã‚’è¡Œãæˆ»ã‚‹ã«ã€å·¦å³ã‚’ãã®ã¾ã¾å‹•ãã‚ˆã†ã«ã—ãŸ
+            Vector3 dirRaw = Vector3.forward * v + Vector3.right * h;
+            // dirã®å‘ãã®åŸºæº–ã‚’ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®ã‚«ãƒ¡ãƒ©ã«ã—ãŸ 
+            Vector3 dir = transform.TransformDirection(dirRaw);
+            // ã‚«ãƒ¡ãƒ©ã®ç¸¦ã®ãƒ™ã‚¯ãƒˆãƒ«ã‚’ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®å‹•ãã«åæ˜ ã•ã›ãªã„
+            dir.y = 0;
+
+            if (_state == PlayerState.SpeedUp)
+            {
+                _rb.velocity = dir.normalized * _powerUpSpeed + Vector3.up * _rb.velocity.y;
+            }
+            else
+            {
+                _rb.velocity = dir.normalized * _moveSpeed + Vector3.up * _rb.velocity.y;
+            }
+
+            //this.transform.rotation = new Quaternion(transform.rotation.x, _camera.transform.rotation.y ,transform.rotation.z, transform.rotation.w);
+            transform.eulerAngles = new Vector3(transform.rotation.x, _camera.transform.rotation.y * 180 + 360, transform.rotation.z);
+            //transform.Rotate(transform.rotation.x, _camera.transform.rotation.y, transform.rotation.z);
+
+            _anim.SetFloat("WalkFloat", _rb.velocity.magnitude);
+
+            if (Input.GetAxisRaw(_attackName) > 0 &&
+                _currentBulletCount > 0 &&
+                _state != PlayerState.isFlag &&
+                _isTrigger)
+            {
+                GameObject obj = Instantiate(_snowBall);
+                obj.transform.position = _muzzle.position;
+                obj.transform.forward = _camera.transform.forward;
+                _anim.SetTrigger("ThrowTrigger");
+                _isTrigger = false;
+                _currentBulletCount--;
+                _pUIController.BulletUIUpdate(_currentBulletCount);
+                // SE
+                _audioController.PlaySE(CueSheetName.CueSheet_se, "SE_Attack");
+            }// é›ªç‰ã‚’ç™ºå°„ã™ã‚‹
+            else if (Input.GetAxisRaw(_attackName) <= 0.1f)
+            {
+                _isTrigger = true;
+            }
+
+            if (Input.GetButtonDown(_reloadName) && _currentBulletCount != _maxBulletCount)
+            {
+                StartCoroutine(BulletReload());
+                CriAtomSource criAtomSource = new CriAtomSource();
+                criAtomSource.Play();
+                // SE
+                _audioController.PlaySE(CueSheetName.CueSheet_se, "SE_ReLoad");
+            }// ãƒªãƒ­ãƒ¼ãƒ‰
         }
-        // ‚’¼•ûŒü‚Ì‘¬“x‚ğ‚»‚Ì‚Ü‚Ü‚É‚·‚é
-        float y = _rb.velocity.y;
 
-        _rb.velocity = dir.normalized * _moveSpeed + Vector3.up * y;
-        _anim.SetFloat("WalkFloat", dir.magnitude);
-
-        if (Input.GetButtonDown(_attackName) && _currentBulletCount > 0 && !_isLoad && !_isCandyFlag)
-        {
-            GameObject obj = Instantiate(_snowBall);
-            obj.transform.position = _muzzle.position;
-            obj.transform.forward = Camera.main.transform.forward;
-            _anim.SetTrigger("ThrowTrigger");
-            _currentBulletCount--;
-            _pUIController.BulletUIUpdate(_currentBulletCount);
-        }// á‹Ê‚ğ”­Ë‚·‚é
-
-        if (Input.GetButtonDown(_reloadName) && _currentBulletCount != _maxBulletCount)
-        {
-            StartCoroutine(BulletReload());
-        }// ƒŠƒ[ƒh
+        Debug.Log($"{this.gameObject.name}ã®çŠ¶æ…‹ã¯{_state.ToString()}");
     }
 
     /// <summary>
-    /// ƒŠƒ[ƒh‚Ìˆ—
+    /// ãƒªãƒ­ãƒ¼ãƒ‰ã®å‡¦ç†
     /// </summary>
     /// <returns></returns>
     IEnumerator BulletReload()
     {
         _currentBulletCount = _maxBulletCount;
         _pUIController.Reload();
-        _isLoad = true;
+        _state = PlayerState.isLoad;
         yield return new WaitForSeconds(_reloadTime);
         _pUIController.BulletUIUpdate(_currentBulletCount);
         _pUIController.Reload();
-        _isLoad = false;
+        _state = PlayerState.Normal;
+    }
+
+    IEnumerator Stan()
+    {
+        _state = PlayerState.Stan;
+        _audioController.PlaySE(CueSheetName.CueSheet_se_loop, "SE_Stan");
+        yield return new WaitForSeconds(_stanTime);
+        _state = PlayerState.Normal;
+        yield break;
+    }
+
+    /// <summary>
+    /// ç¾åœ¨ã®ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ã®çŠ¶æ…‹
+    /// </summary>
+    public enum PlayerState
+    {
+        Pause,
+        Normal,
+        isFlag,
+        isLoad,
+        SpeedUp,
+        Stan
+    }
+
+    public void GameStart()
+    {
+        _state = PlayerState.Normal;
+    }
+
+    /// <summary>
+    /// ãƒ—ãƒ¬ã‚¤ãƒ¤ãƒ¼ãŒæ­»ã¬ã¨ãã®å‡¦ç†
+    /// </summary>
+    public void PlayerDeath()
+    {
+        if (_state == PlayerState.isFlag)
+        {
+            // ãƒªã‚¹ãƒãƒ¼ãƒ³å‡¦ç†
+            this.transform.position = _responeTransform.position;
+            _state = PlayerState.Normal;
+            // ã‚¹ãƒ†ãƒ¼ã‚¿ã‚¹ã®ãƒªã‚»ãƒƒãƒˆ
+            _currentBulletCount = _maxBulletCount;
+            _currentHP = _maxHP;
+            _pUIController.BulletUIUpdate(_currentBulletCount);
+            _pUIController.HpUIUpdate(_currentHP);
+            // flagã‚’ãã®ä½ç½®ã«å‡ºç¾ã•ã›ã‚‹å‡¦ç†ã€€ã‚²ãƒ¼ãƒ ãƒãƒãƒ¼ã‚¸ãƒ£ãƒ¼ã‚’å‘¼ã¶
+            _gameController.FlagRespone(this.transform.position);
+        } // ãƒªã‚¹ãƒãƒ¼ãƒ³ã™ã‚‹å‡¦ç†ã‚’æ›¸ã
+        else
+        {
+            StartCoroutine(Stan());
+        } // ã‚¹ã‚¿ãƒ³ã™ã‚‹å‡¦ç†ã‚’æ›¸ã
     }
 
     private void OnTriggerEnter(Collider other)
@@ -107,6 +206,32 @@ public class PlayerController : MonoBehaviour
         {
             _currentHP--;
             _pUIController.HpUIUpdate(_currentHP);
+            if (_currentHP >= 0)
+            {
+                PlayerDeath();
+            }
+        } // é›ªç‰ãŒå½“ãŸã£ãŸã¨ãã«è‡ªåˆ†ã®HPã‚’æ¸›ã‚‰ã™å‡¦ç†æœªãƒ†ã‚¹ãƒˆ
+        else if (other.gameObject.CompareTag("Flag"))
+        {
+            _state = PlayerState.isFlag;
+            _gameController.GetFlag(this.transform);
+            Destroy(other.gameObject);
+            Debug.Log("æ——ã‚’å–ã‚Šã¾ã—ãŸ");
+        } // ãƒ•ãƒ©ã‚°ã‚’å–ã£ãŸéš›ã®å‡¦ç†
+        else if (other.gameObject.CompareTag("SpeedUp") && _state != PlayerState.isFlag)
+        {
+            _state = PlayerState.SpeedUp;
         }
+    }
+
+    public void Pause()
+    {
+        _lastState = CurrentPlayerState;
+        _state = PlayerState.Pause;
+    }
+
+    public void Resume()
+    {
+        _state = _lastState;
     }
 }

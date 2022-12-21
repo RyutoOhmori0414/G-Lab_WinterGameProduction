@@ -15,17 +15,22 @@ public class GameController : MonoBehaviour
     Transform _teamATransform;
     [Tooltip("Bチームの陣地のTransform"), SerializeField]
     Transform _teamBTransform;
+    [Tooltip("Flagnのprefab"), SerializeField]
+    GameObject _flagPrefab;
 
+    MainUIController _mainUIController;
     float _timer = default;
     /// <summary>Timerが動いているかどうか</summary>
     bool _running = false;
     List<IPausable> _pausables = new();
+    bool _gameStart = true;
 
     private void Start()
     {
         _running = true;
         // IPausableを実装しているGamaObjectを探して最初にポーズをかけている
         GameObject[] gameObjects = FindObjectsOfType<GameObject>();
+        _mainUIController = FindObjectOfType<MainUIController>();
 
         foreach(var n in gameObjects)
         {
@@ -45,21 +50,39 @@ public class GameController : MonoBehaviour
         {
             Cursor.visible = false;
             _timer += Time.deltaTime;
-
-            if (_timer > _setUpTime)
+            if (_timer < _setUpTime)
+            {
+                _mainUIController.CountTextUpdate(_setUpTime - _timer);
+            }
+            else if (_timer > _setUpTime && _gameStart)
             {
                 // 最初の待ち時間が終わってから行う処理
                 // カウントダウンが終わったらポーズを解除する
-                foreach(var n in _pausables)
+                foreach (var n in _pausables)
                 {
                     n.Resume();
                 }
-            }
-            if (_timer > _timeLimit + _setUpTime)
+
+                _mainUIController.CountEnd();
+                _gameStart = false;
+            } // カウントダウンが終わった際に一度だけ行われる
+            else if (_timer > _timeLimit + _setUpTime)
             {
                 // タイムリミットが過ぎたら行う処理
                 TimeOverGameEnd();
                 _running = false;
+                _mainUIController.SubCountEnd();
+            }
+            else
+            {
+                _mainUIController.SubCountTextUpdate(_timeLimit - (_timer - _setUpTime));
+            } // ゲーム中の処理
+        }
+        else
+        {
+            if (Input.anyKeyDown)
+            {
+                _mainUIController.ToTitle();
             }
         }
 
@@ -73,16 +96,7 @@ public class GameController : MonoBehaviour
             n.Pause();
         }
 
-        if (winTeam == Team.ATeam)
-        {
-            // Aチームwin
-            // UIをpanelを出す
-        }
-        else
-        {
-            // Bチームwin
-            // UIのパネルを出す
-        }
+        _mainUIController.EndGame(winTeam);
     }
 
     void TimeOverGameEnd()
@@ -93,17 +107,19 @@ public class GameController : MonoBehaviour
             n.Pause();
         }
 
-        // フラグがAチームの陣地に近かったら
-        if (Vector3.Distance(_flagTransform.position, _teamATransform.position) < Vector3.Distance(_flagTransform.position, _teamBTransform.position))
-        {
-            // Aチームwin
-            // UIをpanelを出す
-        }
-        else
-        {
-            // Bチームwin
-            // UIのパネルを出す
-        }
+        _mainUIController.DrawGame();
+    }
+
+    public void FlagRespone(Vector3 _sponePosition)
+    {
+        GameObject tempGO = Instantiate(_flagPrefab);
+        tempGO.transform.position = _sponePosition;
+        _flagTransform = tempGO.transform;
+    }
+
+    public void GetFlag(Transform _playerTransform)
+    {
+        _flagTransform = _playerTransform;
     }
 
     public enum Team

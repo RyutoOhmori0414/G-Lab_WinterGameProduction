@@ -23,8 +23,7 @@ public class PlayerReload : MonoBehaviour
     }
     private void Update()
     {
-        //if (Input.GetButtonDown(Reload))
-        if (Input.GetKeyDown(KeyCode.R))
+        if (Input.GetButtonDown(_reload))
         {
             if (_playerShoot.RemainingBullets != ReloadCount)
             {

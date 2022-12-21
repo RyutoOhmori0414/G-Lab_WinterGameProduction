@@ -16,4 +16,9 @@ public class TestSnowBallController : MonoBehaviour
         _rb.velocity = this.transform.forward * _ballSpeed;
         Destroy(this.gameObject, 3f);
     }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        Destroy(gameObject);
+    }
 }
