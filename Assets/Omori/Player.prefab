@@ -24,7 +24,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1481177033174053898}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.40499973, y: 0.8109999, z: 1}
+  m_LocalPosition: {x: 0.40499973, y: 0.8109999, z: 1.65}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -182,6 +182,9 @@ MonoBehaviour:
   _muzzle: {fileID: 4865947043594855757}
   _maxBulletCount: 5
   _reloadTime: 2
+  _stanTime: 3
+  _stanEffect: {fileID: 5659291355382750488, guid: b3db7d4d711f94d4796743baa5ba7a38,
+    type: 3}
   _maxHP: 3
   _camera: {fileID: 0}
   _responeTransform: {fileID: 0}
@@ -322,7 +325,7 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: 3574a67120679ea4ab1cd42e715a7ac7,
         type: 3}
       propertyPath: m_Enabled
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 3574a67120679ea4ab1cd42e715a7ac7,
         type: 3}
