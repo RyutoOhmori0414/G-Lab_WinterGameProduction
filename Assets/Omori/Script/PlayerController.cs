@@ -20,8 +20,10 @@ public class PlayerController : MonoBehaviour, IPausable
     int _maxBulletCount = 5;
     [Tooltip("リロードの秒数"), SerializeField]
     float _reloadTime = 2;
-    [Tooltip("スタンしている秒数")]
+    [Tooltip("スタンしている秒数"), SerializeField]
     float _stanTime = 3f;
+    [Tooltip("スタン時のエフェクト"), SerializeField]
+    GameObject _stanEffect;
     [Tooltip("HPの最大数"), SerializeField]
     int _maxHP = 3;
     [Tooltip("プレイヤーのカメラ"),SerializeField]
@@ -37,11 +39,11 @@ public class PlayerController : MonoBehaviour, IPausable
 
     [Header("入力関係")]
     [Tooltip("上下入力"), SerializeField]
-    string _verticalName = "Vertical";
+    string _verticalName ;
     [Tooltip("左右入力"), SerializeField]
-    string _horizontalName = "Horizontal";
+    string _horizontalName;
     [Tooltip("攻撃"), SerializeField]
-    string _attackName = "Fire1";
+    string _attackName;
     [Tooltip("リロード"), SerializeField]
     string _reloadName;
 
@@ -152,8 +154,10 @@ public class PlayerController : MonoBehaviour, IPausable
     IEnumerator Stan()
     {
         _state = PlayerState.Stan;
+        GameObject obj = Instantiate(_stanEffect);
         _audioController.PlaySE(CueSheetName.CueSheet_se_loop, "SE_Stan");
         yield return new WaitForSeconds(_stanTime);
+        Destroy(obj);
         _state = PlayerState.Normal;
         yield break;
     }

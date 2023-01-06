@@ -8,6 +8,10 @@ public class TestSnowBallController : MonoBehaviour
     float _ballSpeed = 10f;
     [Tooltip("ボールの射出角度"), SerializeField]
     float _ballAngle = 15f;
+    [Tooltip("Hit時のエフェクト"), SerializeField]
+    GameObject _hitEffect;
+    [Tooltip("エフェクトのLifeTime"), SerializeField]
+    float _effectLifeTime = 5;
     Rigidbody _rb;
     void Start()
     {
@@ -20,5 +24,8 @@ public class TestSnowBallController : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         Destroy(gameObject);
+        GameObject obj = Instantiate(_hitEffect);
+        obj.transform.position = this.transform.position;
+        Destroy(obj, _effectLifeTime);
     }
 }

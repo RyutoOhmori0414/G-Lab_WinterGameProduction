@@ -3073,7 +3073,7 @@ MonoBehaviour:
     m_MaxSpeed: 300
     m_AccelTime: 0.1
     m_DecelTime: 0.1
-    m_InputAxisName: Mouse Y
+    m_InputAxisName: Mouse Y P3
     m_InputAxisValue: 0
     m_InvertInput: 0
     m_MinValue: -70
@@ -3097,7 +3097,7 @@ MonoBehaviour:
     m_MaxSpeed: 300
     m_AccelTime: 0.1
     m_DecelTime: 0.1
-    m_InputAxisName: Mouse X
+    m_InputAxisName: Mouse X P3
     m_InputAxisValue: 0
     m_InvertInput: 0
     m_MinValue: -180
@@ -4636,7 +4636,7 @@ MonoBehaviour:
     m_MaxSpeed: 300
     m_AccelTime: 0.1
     m_DecelTime: 0.1
-    m_InputAxisName: Mouse Y
+    m_InputAxisName: Mouse Y P4
     m_InputAxisValue: 0
     m_InvertInput: 0
     m_MinValue: -70
@@ -4660,7 +4660,7 @@ MonoBehaviour:
     m_MaxSpeed: 300
     m_AccelTime: 0.1
     m_DecelTime: 0.1
-    m_InputAxisName: Mouse X
+    m_InputAxisName: Mouse X P4
     m_InputAxisValue: 0
     m_InvertInput: 0
     m_MinValue: -180
@@ -6247,11 +6247,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4421094819740191224, guid: e779f06cb01808d47ae582b2482b2b01,
         type: 3}
-      propertyPath: _anim
-      value: 
-      objectReference: {fileID: 1524804561}
-    - target: {fileID: 4421094819740191224, guid: e779f06cb01808d47ae582b2482b2b01,
-        type: 3}
       propertyPath: _camera
       value: 
       objectReference: {fileID: 1155764653}
@@ -6289,6 +6284,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 5480389225304579677, guid: e779f06cb01808d47ae582b2482b2b01,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 5480389225304579744, guid: e779f06cb01808d47ae582b2482b2b01,
         type: 3}
@@ -7225,11 +7225,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4421094819740191224, guid: e779f06cb01808d47ae582b2482b2b01,
         type: 3}
-      propertyPath: _anim
-      value: 
-      objectReference: {fileID: 1524804561}
-    - target: {fileID: 4421094819740191224, guid: e779f06cb01808d47ae582b2482b2b01,
-        type: 3}
       propertyPath: _camera
       value: 
       objectReference: {fileID: 437952912}
@@ -7262,6 +7257,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 13
+      objectReference: {fileID: 0}
+    - target: {fileID: 5480389225304579677, guid: e779f06cb01808d47ae582b2482b2b01,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 5480389225304579744, guid: e779f06cb01808d47ae582b2482b2b01,
         type: 3}
@@ -9666,11 +9666,6 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4421094819740191224, guid: e779f06cb01808d47ae582b2482b2b01,
         type: 3}
-      propertyPath: _anim
-      value: 
-      objectReference: {fileID: 1524804561}
-    - target: {fileID: 4421094819740191224, guid: e779f06cb01808d47ae582b2482b2b01,
-        type: 3}
       propertyPath: _camera
       value: 
       objectReference: {fileID: 1096043135}
@@ -9708,6 +9703,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Layer
       value: 14
+      objectReference: {fileID: 0}
+    - target: {fileID: 5480389225304579677, guid: e779f06cb01808d47ae582b2482b2b01,
+        type: 3}
+      propertyPath: m_Constraints
+      value: 80
       objectReference: {fileID: 0}
     - target: {fileID: 5480389225304579744, guid: e779f06cb01808d47ae582b2482b2b01,
         type: 3}
@@ -11438,11 +11438,6 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 12
       objectReference: {fileID: 0}
-    - target: {fileID: 2118052329597563659, guid: e779f06cb01808d47ae582b2482b2b01,
-        type: 3}
-      propertyPath: m_Enabled
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 2541791595479923282, guid: e779f06cb01808d47ae582b2482b2b01,
         type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -12475,12 +12470,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1519842866}
   m_CullTransparentMesh: 1
---- !u!95 &1524804561 stripped
-Animator:
-  m_CorrespondingSourceObject: {fileID: 2118052329597563659, guid: e779f06cb01808d47ae582b2482b2b01,
-    type: 3}
-  m_PrefabInstance: {fileID: 1434999580}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1534834473
 PrefabInstance:
   m_ObjectHideFlags: 0

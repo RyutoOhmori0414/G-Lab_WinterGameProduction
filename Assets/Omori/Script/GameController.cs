@@ -95,6 +95,7 @@ public class GameController : MonoBehaviour
         {
             n.Pause();
         }
+        _running = false;
 
         _mainUIController.EndGame(winTeam);
     }
