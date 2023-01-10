@@ -15,8 +15,10 @@ public class GameController : MonoBehaviour
     Transform _teamATransform;
     [Tooltip("Bチームの陣地のTransform"), SerializeField]
     Transform _teamBTransform;
-    [Tooltip("Flagnのprefab"), SerializeField]
+    [Tooltip("Flagのprefab"), SerializeField]
     GameObject _flagPrefab;
+    [Tooltip("Flagのリスポーン位置"), SerializeField]
+    Transform _responeTramsform;
 
     MainUIController _mainUIController;
     float _timer = default;
@@ -111,10 +113,10 @@ public class GameController : MonoBehaviour
         _mainUIController.DrawGame();
     }
 
-    public void FlagRespone(Vector3 _sponePosition)
+    public void FlagRespone()
     {
         GameObject tempGO = Instantiate(_flagPrefab);
-        tempGO.transform.position = _sponePosition;
+        tempGO.transform.position = _responeTramsform.position;
         _flagTransform = tempGO.transform;
     }
 

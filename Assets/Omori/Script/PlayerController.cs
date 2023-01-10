@@ -153,11 +153,13 @@ public class PlayerController : MonoBehaviour, IPausable
 
     IEnumerator Stan()
     {
+        _rb.Sleep();
         _state = PlayerState.Stan;
         GameObject obj = Instantiate(_stanEffect);
         _audioController.PlaySE(CueSheetName.CueSheet_se_loop, "SE_Stan");
         yield return new WaitForSeconds(_stanTime);
         Destroy(obj);
+        _rb.WakeUp();
         _state = PlayerState.Normal;
         yield break;
     }
@@ -196,7 +198,7 @@ public class PlayerController : MonoBehaviour, IPausable
             _pUIController.BulletUIUpdate(_currentBulletCount);
             _pUIController.HpUIUpdate(_currentHP);
             // flagをその位置に出現させる処理　ゲームマネージャーを呼ぶ
-            _gameController.FlagRespone(this.transform.position);
+            _gameController.FlagRespone();
         } // リスポーンする処理を書く
         else
         {
