@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class CursorController : MonoBehaviour
 {
-    [Tooltip("カーソルのオンオフ")]
+    [Tooltip("カーソルのオンオフ"), SerializeField]
+    bool _cursorVisible;
 
     void Start()
     {
-        Cursor.visible = false;
+        Cursor.visible = _cursorVisible;
     }
 }
